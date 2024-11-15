@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Location</title>
+</head>
+<body>
+<h2>Click the button below to share your location</h2>
+<button onclick="getLocation()">Share Location</button>
+
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendLocation, showError);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function sendLocation(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    // Replace with your server URL
+    const url = 'https://your-server-url.com/location';
+
+    // Send location to the server
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ latitude, longitude }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Location sent successfully!");
+        console.log(data);
+    })
+    .catch(error => {
+        console.error("Error sending location:", error);
+    });
+}
+
+function showError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
+    }
+}
+</script>
+</body>
+</html>
